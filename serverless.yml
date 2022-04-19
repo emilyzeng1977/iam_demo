@@ -1,0 +1,49 @@
+service: iam
+
+frameworkVersion: "3.10"
+
+useDotenv: true
+
+plugins:
+  - serverless-iam-roles-per-function
+  - serverless-step-functions
+provider:
+  name: aws
+  runtime: go1.x
+  region: ap-southeast-2
+  stage: ${env:SLS_STAGE}
+  vpc:
+    securityGroupIds:
+      - ${env:VPC_SECURITY_GROUP_ID}
+    subnetIds:
+      - ${env:VPC_SUBNET_ID}
+
+  # Important environment variables for lambda to know context/region
+  environment:
+    ENV_STAGE: ${self:provider.stage}
+    ENV_REGION: ${self:provider.region}
+    EVENT_TABLE_NAME: events
+    SSM_ARN: arn:aws:ssm:${aws:region}:${aws:accountId}:parameter/${env:SLS_STAGE}/*
+      
+package:
+  patterns:
+    - "!./**"
+    - ./dist/*_linux_amd64/**
+
+functions:
+  # TODO: for customer admin UI in the future
+  # customerapi:
+  #   handler: dist/customerapi_linux_amd64/customerapi
+  #   events:
+  #     - httpApi:
+  #         method: "*"
+  #         path: /api/v1
+  authorizer:
+    timeout: 120
+    handler: dist/authorizer_linux_amd64/lambda
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - "ssm:GetParameters"
+        Resource:
+          - ${self:provider.environment.SSM_ARN}

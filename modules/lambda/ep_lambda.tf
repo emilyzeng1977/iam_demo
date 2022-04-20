@@ -1,4 +1,4 @@
-module "event_publisher" {
+module "this" {
   source  = "terraform-aws-modules/lambda/aws"
   version = "3.1.0"
 

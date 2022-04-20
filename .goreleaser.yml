@@ -10,3 +10,17 @@ builds:
       - CGO_ENABLED=0
     goarch:
       - amd64
+  - id: seeder
+    main: ./lambda/seeder/seeder.go
+    binary: seeder
+    env:
+      - CGO_ENABLED=0
+    goarch:
+      - amd64
+  - id: create-customer
+    main: ./workflow/customer-onboarding/create-customer/main.go
+    binary: create-customer
+    env:
+      - CGO_ENABLED=0
+    goarch:
+      - amd64

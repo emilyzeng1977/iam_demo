@@ -45,6 +45,17 @@ variable "vpc_security_group_ids" {
   default     = null
 }
 
+variable "lambda_role" {
+  description = " IAM role ARN attached to the Lambda Function. This governs both who / what can invoke your Lambda Function, as well as what resources our Lambda Function has access to. See Lambda Permission Model for more details."
+  type        = string
+  default     = ""
+}
+
+variable "dist_path" {
+
+}
+
+
 variable "tags" {
   description = "Tags to apply to the keys"
   type        = map(string)

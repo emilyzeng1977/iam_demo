@@ -11,11 +11,11 @@ dependency "s3" {
 }
 
 inputs = {
-  function_name = "authorizer"
-  description   = "Authorizer service"
-  handler       = "authorizer"
+  function_name = "seeder"
+  description   = "Seeder service"
+  handler       = "seeder"
   runtime       = "go1.x"
-  dist_path     = "cd dist/authorizer_linux_amd64",
+  dist_path     = "cd dist/seeder_linux_amd64",
 
   store_on_s3   = true
   s3_bucket     = dependency.s3.outputs.buckets["iam-lambdas"]["s3_bucket_id"]

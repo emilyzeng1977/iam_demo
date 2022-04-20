@@ -24,14 +24,15 @@ module "this" {
     {
       path = "${path.module}/../..",
       commands = [
-        "cd dist/authorizer_linux_amd64",
+        var.dist_path,
         ":zip"
       ]
     }
   ]
 
-  attach_policy = true
-  policy        = "arn:aws:iam::aws:policy/AWSLambdaInvocation-DynamoDB"
+  lambda_role = aws_iam_role.iam_lambda_access_role.arn
 
   tags = var.tags
+
+  depends_on = [aws_iam_role.iam_lambda_access_role]
 }

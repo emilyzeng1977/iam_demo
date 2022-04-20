@@ -30,6 +30,7 @@ module "this" {
     }
   ]
 
+  create_role = false
   lambda_role = aws_iam_role.iam_lambda_access_role.arn
 
   tags = var.tags

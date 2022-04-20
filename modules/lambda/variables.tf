@@ -33,6 +33,18 @@ variable "s3_bucket" {
   type        = string
 }
 
+variable "vpc_subnet_ids" {
+  description = "List of subnet ids when Lambda Function should run in the VPC. Usually private or intra subnets."
+  type        = list(string)
+  default     = null
+}
+
+variable "vpc_security_group_ids" {
+  description = "List of security group ids when Lambda Function should run in the VPC."
+  type        = list(string)
+  default     = null
+}
+
 variable "tags" {
   description = "Tags to apply to the keys"
   type        = map(string)

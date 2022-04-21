@@ -24,7 +24,7 @@ module "this" {
     {
       path = "${path.module}/../..",
       commands = [
-        var.cmd_cd_dist_path,
+        local.cmd_cd_dist_path,
         ":zip"
       ]
     }

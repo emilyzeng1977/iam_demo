@@ -54,7 +54,7 @@ variable "lambda_role" {
   default     = ""
 }
 
-variable "cmd_cd_dist_path" {
+variable "dist_path" {
   description = "It's the dist path."
   type        = string
 }
@@ -65,6 +65,7 @@ variable "tags" {
 }
 
 locals {
-  function_name = format("%s-%s-%s", var.service_name, var.SLS_STAGE, var.lambda_name)
-  handler       = format("%s-%s-%s", var.service_name, var.SLS_STAGE, var.lambda_name)
+  function_name    = format("%s-%s-%s", var.service_name, var.SLS_STAGE, var.lambda_name)
+  handler          = format("%s/%s", var.dist_path, var.lambda_name)
+  cmd_cd_dist_path = format("cd %s", var.dist_path)
 }

@@ -15,11 +15,11 @@ locals {
 }
 
 inputs = {
-  lambda_name   = "authorizer"
-  service_name  = local.env_vars.locals.service
+  handler   = "authorizer"
+  service  = local.env_vars.locals.service
   description   = "Authorizer service"
   runtime       = "go1.x"
-  cmd_cd_dist_path     = "cd dist/authorizer_linux_amd64",
+  dist_path     = "dist/authorizer_linux_amd64",
 
   store_on_s3   = true
   s3_bucket     = dependency.s3.outputs.buckets["iam-lambdas"]["s3_bucket_id"]

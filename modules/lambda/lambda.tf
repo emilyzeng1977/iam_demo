@@ -6,7 +6,7 @@ module "this" {
 
   function_name = local.function_name
   description   = var.descripion
-  handler       = local.handler
+  handler       = var.handler
   runtime       = var.runtime
 
   memory_size   = 128
@@ -24,9 +24,14 @@ module "this" {
     {
       path = "${path.module}/../..",
       commands = [
+        local.cmd_check,
+        local.cmd_build,
         local.cmd_cd_dist_path,
         ":zip"
-      ]
+      ],
+//      patterns = [
+//        "dist/authorizer_linux_amd64/authorizer"
+//      ]
     }
   ]
 

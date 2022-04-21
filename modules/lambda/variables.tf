@@ -4,7 +4,7 @@ variable "enable" {
   default     = true
 }
 
-variable "service_name" {
+variable "service" {
   description = "Service name for your Lambda"
   type        = string
   default     = ""
@@ -15,8 +15,8 @@ variable "SLS_STAGE" {
   type        = string
 }
 
-variable "lambda_name" {
-  description = "A unique name for your Lambda"
+variable "handler" {
+  description = "A handler name for your Lambda"
   type        = string
   default     = ""
 }
@@ -55,8 +55,11 @@ variable "lambda_role" {
 }
 
 variable "dist_path" {
-  description = "It's the dist path."
+  description = "It's the dist path for compiled go."
   type        = string
+}
+
+variable "aws_region" {
 }
 
 variable "tags" {
@@ -65,7 +68,12 @@ variable "tags" {
 }
 
 locals {
-  function_name    = format("%s-%s-%s", var.service_name, var.SLS_STAGE, var.lambda_name)
-  handler          = format("%s/%s", var.dist_path, var.lambda_name)
-  cmd_cd_dist_path = format("cd %s", var.dist_path)
+  function_name      = format("%s-%s-%s", var.service, var.SLS_STAGE, var.handler)
+  cmd_check          = "make ci-check"
+  cmd_build          = "make ci-build"
+  cmd_cd_dist_path   = format("cd %s", var.dist_path)
+  # IAM
+  inline_policy_name = "iam-dev-lambda"
+  # iam-test-seeder-ap-southeast-2-lambdaRole
+  lambda_role_name   = format("%s-%s-%s-%s-lambdaRole", var.service, var.SLS_STAGE, var.handler, var.aws_region)
 }

@@ -1,5 +1,5 @@
 resource "aws_iam_role" "iam_lambda_access_role" {
-  name               = "iam-test-seeder-ap-southeast-2-lambdaRole"
+  name               = local.lambda_role_name
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -16,7 +16,7 @@ resource "aws_iam_role" "iam_lambda_access_role" {
   managed_policy_arns = ["arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"]
 
   inline_policy {
-    name = "iam-dev-lambda"
+    name = local.inline_policy_name
 
     policy = jsonencode({
       Version = "2012-10-17"

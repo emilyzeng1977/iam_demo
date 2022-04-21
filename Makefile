@@ -5,6 +5,13 @@ build:
 
 	@goreleaser --snapshot --rm-dist
 
+ci-check:
+	@goreleaser check --config goreleaser.yml
+
+ci-build:
+	@go mod tidy -compat=1.18
+	@goreleaser --snapshot --rm-dist --config goreleaser.yml
+
 single:
 	@go mod tidy -compat=1.18
 

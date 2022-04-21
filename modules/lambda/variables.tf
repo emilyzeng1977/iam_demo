@@ -4,20 +4,25 @@ variable "enable" {
   default     = true
 }
 
-variable "function_name" {
-  description = "A unique name for your Lambda Function"
+variable "service_name" {
+  description = "Service name for your Lambda"
+  type        = string
+  default     = ""
+}
+
+variable "SLS_STAGE" {
+  description = "SLS stage for your Lambda"
+  type        = string
+}
+
+variable "lambda_name" {
+  description = "A unique name for your Lambda"
   type        = string
   default     = ""
 }
 
 variable "descripion" {
   description = "Description for your Lambda Function"
-  type        = string
-  default     = ""
-}
-
-variable "handler" {
-  description = "Lambda Function entrypoint in your code"
   type        = string
   default     = ""
 }
@@ -33,30 +38,33 @@ variable "s3_bucket" {
   type        = string
 }
 
-variable "vpc_subnet_ids" {
-  description = "List of subnet ids when Lambda Function should run in the VPC. Usually private or intra subnets."
-  type        = list(string)
-  default     = null
+variable "VPC_SUBNET_ID" {
+  description = "Subnet id when Lambda Function should run in the VPC. Usually private or intra subnets."
+  type        = string
 }
 
-variable "vpc_security_group_ids" {
-  description = "List of security group ids when Lambda Function should run in the VPC."
-  type        = list(string)
-  default     = null
+variable "VPC_SECURITY_GROUP_ID" {
+  description = "Security group ids when Lambda Function should run in the VPC."
+  type        = string
 }
 
 variable "lambda_role" {
-  description = " IAM role ARN attached to the Lambda Function. This governs both who / what can invoke your Lambda Function, as well as what resources our Lambda Function has access to. See Lambda Permission Model for more details."
+  description = "IAM role ARN attached to the Lambda Function. This governs both who / what can invoke your Lambda Function, as well as what resources our Lambda Function has access to. See Lambda Permission Model for more details."
   type        = string
   default     = ""
 }
 
-variable "dist_path" {
-
+variable "cmd_cd_dist_path" {
+  description = "It's the dist path."
+  type        = string
 }
 
-
 variable "tags" {
-  description = "Tags to apply to the keys"
+  description = "Tags to apply to the keys."
   type        = map(string)
+}
+
+locals {
+  function_name = format("%s-%s-%s", var.service_name, var.SLS_STAGE, var.lambda_name)
+  handler       = format("%s-%s-%s", var.service_name, var.SLS_STAGE, var.lambda_name)
 }

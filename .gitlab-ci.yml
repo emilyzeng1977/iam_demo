@@ -62,3 +62,19 @@ deploy-dev:
     key: "build-cache:$CI_COMMIT_SHORT_SHA"
     paths:
       - dist/
+
+deploy-dev-tf:
+  stage: deploy-tf
+  extends: .go-cache
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+  dependencies:
+    - build
+  script:
+    - cp ./env/dev.env .env
+    - env $(cat .env | sed -e 's/^/TF_VAR_/' | grep -v "^#" | xargs) terragrunt run-all plan
+  allow_failure: true # TODO:Remove this when we get aws runners sorted
+  cache:
+    key: "build-cache:$CI_COMMIT_SHORT_SHA"
+    paths:
+      - dist/

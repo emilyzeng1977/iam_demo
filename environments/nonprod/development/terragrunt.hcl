@@ -3,6 +3,7 @@
 locals {
   aws_region = "ap-southeast-2"
   aws_azs    = ["${local.aws_region}a", "${local.aws_region}b", "${local.aws_region}c"]
+  service    = "iam"
 }
 
 inputs = {

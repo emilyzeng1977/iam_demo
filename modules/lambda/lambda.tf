@@ -4,9 +4,9 @@ module "this" {
 
   count = var.enable ? 1 : 0
 
-  function_name = var.function_name
+  function_name = local.function_name
   description   = var.descripion
-  handler       = var.handler
+  handler       = local.handler
   runtime       = var.runtime
 
   memory_size   = 128
@@ -17,14 +17,14 @@ module "this" {
   store_on_s3   = true
   s3_bucket     = var.s3_bucket
 
-  vpc_subnet_ids         = var.vpc_subnet_ids
-  vpc_security_group_ids = var.vpc_security_group_ids
+  vpc_subnet_ids         = [var.VPC_SUBNET_ID]
+  vpc_security_group_ids = [var.VPC_SECURITY_GROUP_ID]
 
   source_path = [
     {
       path = "${path.module}/../..",
       commands = [
-        var.dist_path,
+        var.cmd_cd_dist_path,
         ":zip"
       ]
     }

@@ -10,12 +10,17 @@ dependency "s3" {
   config_path = "../../storage/s3"
 }
 
+locals {
+  env_vars = read_terragrunt_config(find_in_parent_folders())
+}
+
 inputs = {
-  function_name = "create-customer"
+  handler   = "create-customer"
+  service  = local.env_vars.locals.service
   description   = "Create customer service"
-  handler       = "create-customer"
   runtime       = "go1.x"
-  dist_path     = "cd dist/create-customer_linux_amd64",
+  dist_path     = "dist/create-customer_linux_amd64",
+
 
   store_on_s3   = true
   s3_bucket     = dependency.s3.outputs.buckets["iam-lambdas"]["s3_bucket_id"]

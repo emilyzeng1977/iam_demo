@@ -10,18 +10,19 @@ dependency "s3" {
   config_path = "../../storage/s3"
 }
 
+locals {
+  env_vars = read_terragrunt_config(find_in_parent_folders())
+}
+
 inputs = {
-  function_name = "seeder"
+  handler   = "seeder"
+  service  = local.env_vars.locals.service
   description   = "Seeder service"
-  handler       = "seeder"
   runtime       = "go1.x"
-  dist_path     = "cd dist/seeder_linux_amd64",
+  dist_path     = "dist/seeder_linux_amd64",
 
   store_on_s3   = true
   s3_bucket     = dependency.s3.outputs.buckets["iam-lambdas"]["s3_bucket_id"]
-
-  vpc_subnet_ids = ["subnet-08b549dfd3edf008b"]
-  vpc_security_group_ids = ["sg-0c4750fe8e5f46316"]
 
   tags = {
     "Managed By" = "Terragrunt"

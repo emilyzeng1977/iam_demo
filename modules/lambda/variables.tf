@@ -59,9 +59,6 @@ variable "dist_path" {
   type        = string
 }
 
-variable "aws_region" {
-}
-
 variable "tags" {
   description = "Tags to apply to the keys."
   type        = map(string)
@@ -74,6 +71,5 @@ locals {
   cmd_cd_dist_path   = format("cd %s", var.dist_path)
   # IAM
   inline_policy_name = "iam-dev-lambda"
-  # iam-test-seeder-ap-southeast-2-lambdaRole
   lambda_role_name   = format("%s-%s-%s-%s-lambdaRole", var.service, var.SLS_STAGE, var.handler, var.aws_region)
 }

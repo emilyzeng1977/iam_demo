@@ -28,10 +28,7 @@ module "this" {
         local.cmd_build,
         local.cmd_cd_dist_path,
         ":zip"
-      ],
-//      patterns = [
-//        "dist/authorizer_linux_amd64/authorizer"
-//      ]
+      ]
     }
   ]
 

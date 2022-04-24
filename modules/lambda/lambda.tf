@@ -9,13 +9,13 @@ module "this" {
   handler       = var.handler
   runtime       = var.runtime
 
-  memory_size   = 128
-  timeout       = 5
+  memory_size = 128
+  timeout     = 5
 
-  publish       = true
+  publish = true
 
-  store_on_s3   = true
-  s3_bucket     = var.s3_bucket
+  store_on_s3 = true
+  s3_bucket   = var.s3_bucket
 
   vpc_subnet_ids         = [var.VPC_SUBNET_ID]
   vpc_security_group_ids = [var.VPC_SECURITY_GROUP_ID]

@@ -1,5 +1,5 @@
 resource "aws_iam_role" "iam_lambda_access_role" {
-  name               = local.lambda_role_name
+  name = local.lambda_role_name
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -16,24 +16,30 @@ resource "aws_iam_role" "iam_lambda_access_role" {
   managed_policy_arns = ["arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"]
 
   inline_policy {
-    name = local.inline_policy_name
-
-    policy = jsonencode({
-      Version = "2012-10-17"
-      Statement = [
-        {
-          Action   = ["logs:CreateLogStream",
-                      "logs:CreateLogGroup",
-                      "logs:PutLogEvents"]
-          Resource = "arn:aws:logs:ap-southeast-2:204532658794:log-group:/aws/lambda/iam-dev-seeder:*:*"
-          Effect   = "Allow"
-        },
-        {
-          Action   = ["ssm:GetParameters"]
-          Resource = "arn:aws:ssm:ap-southeast-2:204532658794:parameter/dev/*"
-          Effect   = "Allow"
-        }
-      ]
-    })
+    name   = local.inline_policy_name
+    policy = data.template_file.authorizer-policy-create-customer.rendered
   }
 }
+
+data "template_file" "iam-policy-template-authorizer" {
+  template = file("config/authorizer.tpl")
+
+  vars = {
+    aws_region    = var.aws_region
+    account_id    = var.account_id
+    function_name = local.function_name
+    stage         = var.SLS_STAGE
+  }
+}
+
+data "template_file" "authorizer-policy-create-customer" {
+  template = file("config/create-customer.tpl")
+
+  vars = {
+    aws_region = var.aws_region
+    account_id = var.account_id
+    service    = var.service
+    stage      = var.SLS_STAGE
+  }
+}
+

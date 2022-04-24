@@ -25,8 +25,7 @@ inputs = {
   store_on_s3   = true
   s3_bucket     = dependency.s3.outputs.buckets["iam-lambdas"]["s3_bucket_id"]
 
-  vpc_subnet_ids = ["subnet-08b549dfd3edf008b"]
-  vpc_security_group_ids = ["sg-0c4750fe8e5f46316"]
+  account_id    = get_aws_account_id()
 
   tags = {
     "Managed By" = "Terragrunt"

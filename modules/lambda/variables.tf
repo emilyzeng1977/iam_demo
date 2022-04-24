@@ -4,6 +4,8 @@ variable "enable" {
   default     = true
 }
 
+variable "account_id" {}
+
 variable "service" {
   description = "Service name for your Lambda"
   type        = string
@@ -29,8 +31,8 @@ variable "descripion" {
 
 variable "runtime" {
   description = "Lambda Function runtime"
-  type = string
-  default = ""
+  type        = string
+  default     = ""
 }
 
 variable "s3_bucket" {
@@ -65,11 +67,11 @@ variable "tags" {
 }
 
 locals {
-  function_name      = format("%s-%s-%s", var.service, var.SLS_STAGE, var.handler)
-  cmd_check          = "make ci-check"
-  cmd_build          = "make ci-build"
-  cmd_cd_dist_path   = format("cd %s", var.dist_path)
+  function_name    = format("%s-%s-%s", var.service, var.SLS_STAGE, var.handler)
+  cmd_check        = "make ci-check"
+  cmd_build        = "make ci-build"
+  cmd_cd_dist_path = format("cd %s", var.dist_path)
   # IAM
   inline_policy_name = "iam-dev-lambda"
-  lambda_role_name   = format("%s-%s-%s-%s-lambdaRole", var.service, var.SLS_STAGE, var.handler, var.aws_region)
+  lambda_role_name   = var.handler == "create-customer" ? format("%s-%s-%s-lambdaRole", var.service, var.SLS_STAGE, var.aws_region) : format("%s-%s-%s-%s-lambdaRole", var.service, var.SLS_STAGE, var.handler, var.aws_region)
 }

@@ -1,4 +1,4 @@
-module "this" {
+module "lambda" {
   source  = "terraform-aws-modules/lambda/aws"
   version = "3.1.0"
 
@@ -26,14 +26,26 @@ module "this" {
       commands = [
         local.cmd_check,
         local.cmd_build,
+        local.cmd_cp_otel,
         local.cmd_cd_dist_path,
         ":zip"
       ]
     }
   ]
 
+  environment_variables = {
+    ENV_STAGE = var.SLS_STAGE
+    ENV_REGION = var.aws_region
+    EVENT_TABLE_NAME = "events"
+    SSM_ARN = local.SSM_ARN
+    AWS_LAMBDA_EXEC_WRAPPER = "/opt/otel-instrument",
+    OPENTELEMETRY_COLLECTOR_CONFIG_FILE = "/var/task/otel-collector-config.yaml"
+  }
+
   create_role = false
   lambda_role = aws_iam_role.iam_lambda_access_role.arn
+
+  layers = compact([local.sdk_layer_arns_amd64])
 
   tags = var.tags
 

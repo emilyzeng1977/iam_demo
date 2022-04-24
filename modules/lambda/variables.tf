@@ -70,8 +70,13 @@ locals {
   function_name    = format("%s-%s-%s", var.service, var.SLS_STAGE, var.handler)
   cmd_check        = "make ci-check"
   cmd_build        = "make ci-build"
+  cmd_cp_otel      = format("cp otel-collector-config.yaml %s", var.dist_path)
   cmd_cd_dist_path = format("cd %s", var.dist_path)
+
+  SSM_ARN      = format("arn:aws:ssm:%s:%s:parameter/%s/*", var.aws_region, var.account_id, var.SLS_STAGE)
   # IAM
   inline_policy_name = "iam-dev-lambda"
   lambda_role_name   = var.handler == "create-customer" ? format("%s-%s-%s-lambdaRole", var.service, var.SLS_STAGE, var.aws_region) : format("%s-%s-%s-%s-lambdaRole", var.service, var.SLS_STAGE, var.handler, var.aws_region)
+  # Adot
+  sdk_layer_arns_amd64 = format("arn:aws:lambda:%s:901920570463:layer:aws-otel-collector-amd64-ver-0-45-0:2", var.aws_region)
 }

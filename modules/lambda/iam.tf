@@ -17,7 +17,7 @@ resource "aws_iam_role" "iam_lambda_access_role" {
 
   inline_policy {
     name   = local.inline_policy_name
-    policy = data.template_file.authorizer-policy-create-customer.rendered
+    policy = var.handler == "create-customer" ? data.template_file.authorizer-policy-create-customer.rendered : data.template_file.authorizer-policy-create-customer.rendered
   }
 }
 

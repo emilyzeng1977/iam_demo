@@ -15,6 +15,14 @@
       ],
       "Effect": "Allow",
       "Resource": "arn:aws:ssm:${aws_region}:${account_id}:parameter/${stage}/*"
+    },
+    {
+      "Action": [
+        "xray:PutTraceSegments",
+        "xray:PutTelemetryRecords"
+      ],
+      "Effect": "Allow",
+      "Resource": "*"
     }
   ],
   "Version": "2012-10-17"

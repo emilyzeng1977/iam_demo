@@ -43,10 +43,6 @@ func HandleRequest(ctx context.Context, event SampleEvent) (string, error) {
 
     fmt.Println("Buckets:")
 
-    for _, bucket := range result.Buckets {
-        fmt.Println(*bucket.Name + ": " + bucket.CreationDate.Format("2006-01-02 15:04:05 Monday"))
-    }
-
 	return fmt.Sprintf("%+v", event), nil
 }
 

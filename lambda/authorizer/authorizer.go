@@ -10,7 +10,20 @@ import (
 	"fmt"
 
 	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/aws/aws-sdk-go/aws/session"
+    "github.com/aws/aws-sdk-go/service/s3"
 )
+
+func GetAllBuckets(sess *session.Session) (*s3.ListBucketsOutput, error) {
+    svc := s3.New(sess)
+
+    result, err := svc.ListBuckets(&s3.ListBucketsInput{})
+    if err != nil {
+        return nil, err
+    }
+
+    return result, nil
+}
 
 type SampleEvent struct {
 	ID   string `json:"id"`
@@ -19,6 +32,21 @@ type SampleEvent struct {
 }
 
 func HandleRequest(ctx context.Context, event SampleEvent) (string, error) {
+    sess := session.Must(session.NewSessionWithOptions(session.Options{
+        SharedConfigState: session.SharedConfigEnable,
+    }))
+
+    result, err := GetAllBuckets(sess)
+    if err != nil {
+        fmt.Println(err)
+    }
+
+    fmt.Println("Buckets:")
+
+    for _, bucket := range result.Buckets {
+        fmt.Println(*bucket.Name + ": " + bucket.CreationDate.Format("2006-01-02 15:04:05 Monday"))
+    }
+
 	return fmt.Sprintf("%+v", event), nil
 }
 

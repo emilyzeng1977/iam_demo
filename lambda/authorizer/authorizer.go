@@ -11,19 +11,8 @@ import (
 
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go/aws/session"
-    "github.com/aws/aws-sdk-go/service/s3"
+    "github.com/aws/aws-sdk-go/service/ec2"
 )
-
-func GetAllBuckets(sess *session.Session) (*s3.ListBucketsOutput, error) {
-    svc := s3.New(sess)
-
-    result, err := svc.ListBuckets(&s3.ListBucketsInput{})
-    if err != nil {
-        return nil, err
-    }
-
-    return result, nil
-}
 
 type SampleEvent struct {
 	ID   string `json:"id"`
@@ -32,16 +21,21 @@ type SampleEvent struct {
 }
 
 func HandleRequest(ctx context.Context, event SampleEvent) (string, error) {
+    // Load session from shared config
     sess := session.Must(session.NewSessionWithOptions(session.Options{
         SharedConfigState: session.SharedConfigEnable,
     }))
 
-    result, err := GetAllBuckets(sess)
-    if err != nil {
-        fmt.Println(err)
-    }
+    // Create new EC2 client
+    ec2Svc := ec2.New(sess)
 
-    fmt.Println("Buckets:")
+    // Call to get detailed information on each instance
+    result, err := ec2Svc.DescribeInstances(nil)
+    if err != nil {
+        fmt.Println("Error", err)
+    } else {
+        fmt.Println("Success", result)
+    }
 
 	return fmt.Sprintf("%+v", event), nil
 }

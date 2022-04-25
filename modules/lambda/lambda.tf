@@ -38,8 +38,9 @@ module "lambda" {
     ENV_REGION = var.aws_region
     EVENT_TABLE_NAME = "events"
     SSM_ARN = local.SSM_ARN
-    AWS_LAMBDA_EXEC_WRAPPER = "/opt/otel-instrument",
+    AWS_LAMBDA_EXEC_WRAPPER = "/opt/otel-instrument"
     OPENTELEMETRY_COLLECTOR_CONFIG_FILE = "/var/task/otel-collector-config.yaml"
+    log_level                           = "debug"
     HONEYCOMB_API_KEY                   = data.aws_ssm_parameter.honeycomb_api_key.value
   }
 

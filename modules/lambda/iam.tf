@@ -17,7 +17,7 @@ resource "aws_iam_role" "iam_lambda_access_role" {
 
   inline_policy {
     name   = local.inline_policy_name
-    policy = var.handler == "create-customer" ? data.template_file.authorizer-policy-create-customer.rendered : data.template_file.authorizer-policy-create-customer.rendered
+    policy = var.handler == "create-customer" ? data.template_file.iam-policy-create-customer.rendered : data.template_file.iam-policy-template-authorizer.rendered
   }
 }
 
@@ -32,7 +32,7 @@ data "template_file" "iam-policy-template-authorizer" {
   }
 }
 
-data "template_file" "authorizer-policy-create-customer" {
+data "template_file" "iam-policy-create-customer" {
   template = file("config/create-customer.tpl")
 
   vars = {
@@ -43,4 +43,3 @@ data "template_file" "authorizer-policy-create-customer" {
     kms_key    = local.KMS_KEY
   }
 }
-

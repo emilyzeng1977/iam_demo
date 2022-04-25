@@ -6,15 +6,14 @@ terraform {
   source = "${get_path_to_repo_root()}//modules/api-gateway"
 }
 
-//dependency "s3" {
-//  config_path = "../../storage/s3"
-//}
-
 locals {
   env_vars = read_terragrunt_config(find_in_parent_folders())
 }
 
 inputs = {
+  path_part    = ["customers"]
+  http_methods = ["POST"]
+
   tags = {
     "Managed By" = "Terragrunt"
   }

@@ -16,7 +16,7 @@ locals {
 
 inputs = {
   handler   = "authorizer"
-  service  = local.env_vars.locals.service
+  service   = local.env_vars.locals.service
   description   = "Authorizer service"
   runtime       = "go1.x"
   dist_path     = "dist/authorizer_linux_amd64",
@@ -25,8 +25,8 @@ inputs = {
   s3_bucket     = dependency.s3.outputs.buckets["iam-lambdas"]["s3_bucket_id"]
 
   timeout       = 120
-
   account_id    = get_aws_account_id()
+  tracing_mode  = "Active"
 
   tags = {
     "Managed By" = "Terragrunt"

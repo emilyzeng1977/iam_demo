@@ -35,6 +35,12 @@ variable "runtime" {
   default     = ""
 }
 
+variable "tracing_mode" {
+  type        = string
+  description = "Lambda function tracing mode"
+  default     = "PassThrough"
+}
+
 variable "s3_bucket" {
   description = "S3 Bucket for storing lambda releases"
   type        = string

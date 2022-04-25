@@ -16,7 +16,7 @@ locals {
 
 inputs = {
   handler   = "create-customer"
-  service  = local.env_vars.locals.service
+  service   = local.env_vars.locals.service
   description   = "Create customer service"
   runtime       = "go1.x"
   dist_path     = "dist/create-customer_linux_amd64",
@@ -24,9 +24,9 @@ inputs = {
   store_on_s3   = true
   s3_bucket     = dependency.s3.outputs.buckets["iam-lambdas"]["s3_bucket_id"]
 
-  timeout       = 520
-
+  timeout       = 52
   account_id    = get_aws_account_id()
+  tracing_mode  = "Active"
 
   tags = {
     "Managed By" = "Terragrunt"

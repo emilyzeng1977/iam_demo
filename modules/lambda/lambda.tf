@@ -9,8 +9,8 @@ module "lambda" {
   handler       = var.handler
   runtime       = var.runtime
 
-  memory_size = 128
-  timeout     = 5
+  memory_size = var.memory_size
+  timeout     = var.timeout
 
   publish = true
 

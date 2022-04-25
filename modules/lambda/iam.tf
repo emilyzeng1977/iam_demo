@@ -27,8 +27,8 @@ data "template_file" "iam-policy-template-authorizer" {
   vars = {
     aws_region    = var.aws_region
     account_id    = var.account_id
-    function_name = local.function_name
     stage         = var.SLS_STAGE
+    function_name = local.function_name
   }
 }
 
@@ -40,6 +40,7 @@ data "template_file" "authorizer-policy-create-customer" {
     account_id = var.account_id
     service    = var.service
     stage      = var.SLS_STAGE
+    kms_key    = local.KMS_KEY
   }
 }
 

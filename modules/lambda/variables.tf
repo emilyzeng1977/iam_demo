@@ -46,12 +46,23 @@ variable "VPC_SUBNET_ID" {
 }
 
 variable "VPC_SECURITY_GROUP_ID" {
-  description = "Security group ids when Lambda Function should run in the VPC."
+  description = "Security group ids when Lambda Function should run in the VPC"
   type        = string
 }
 
+variable "memory_size" {
+  description = "Memory size for lambda function"
+  type        = number
+  default     = 1024
+}
+
+variable "timeout" {
+  description = "Timeout for lambda function"
+  type        = number
+}
+
 variable "lambda_role" {
-  description = "IAM role ARN attached to the Lambda Function. This governs both who / what can invoke your Lambda Function, as well as what resources our Lambda Function has access to. See Lambda Permission Model for more details."
+  description = "IAM role ARN attached to the Lambda Function. This governs both who / what can invoke your Lambda Function, as well as what resources our Lambda Function has access to. See Lambda Permission Model for more details"
   type        = string
   default     = ""
 }
@@ -77,6 +88,8 @@ locals {
   # IAM
   inline_policy_name = "iam-dev-lambda"
   lambda_role_name   = var.handler == "create-customer" ? format("%s-%s-%s-lambdaRole", var.service, var.SLS_STAGE, var.aws_region) : format("%s-%s-%s-%s-lambdaRole", var.service, var.SLS_STAGE, var.handler, var.aws_region)
-  # Adot
+  # Hard code in the original serverless framework
+  KMS_KEY = "arn:aws:kms:ap-southeast-2:211817836436:key/834f524e-b2c2-4146-b98d-be77e976483c"
+  # Otel
   sdk_layer_arns_amd64 = format("arn:aws:lambda:%s:901920570463:layer:aws-otel-collector-amd64-ver-0-45-0:2", var.aws_region)
 }

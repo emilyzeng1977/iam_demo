@@ -24,6 +24,8 @@ inputs = {
   store_on_s3   = true
   s3_bucket     = dependency.s3.outputs.buckets["iam-lambdas"]["s3_bucket_id"]
 
+  timeout       = 120
+
   account_id    = get_aws_account_id()
 
   tags = {

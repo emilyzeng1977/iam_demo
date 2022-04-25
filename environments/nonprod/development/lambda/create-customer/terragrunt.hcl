@@ -21,9 +21,10 @@ inputs = {
   runtime       = "go1.x"
   dist_path     = "dist/create-customer_linux_amd64",
 
-
   store_on_s3   = true
   s3_bucket     = dependency.s3.outputs.buckets["iam-lambdas"]["s3_bucket_id"]
+
+  timeout       = 520
 
   account_id    = get_aws_account_id()
 

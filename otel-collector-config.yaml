@@ -8,7 +8,7 @@ exporters:
   otlp/honeycomb:
     endpoint: "api.honeycomb.io:443"
     headers:
-      x-honeycomb-team: "${HONEYCOMB_API_KEY}"
+      "x-honeycomb-team": "${HONEYCOMB_API_KEY}"
 
 service:
   pipelines:

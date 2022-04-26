@@ -1,6 +1,7 @@
 variable "rest_api_name" {
   description = "Name of the REST API"
   type        = string
+  default     = "dev-tf-iam"
 }
 
 variable "rest_api_description" {

@@ -11,7 +11,7 @@ locals {
 }
 
 inputs = {
-  path_part    = ["customers"]
+  path_parts    = ["customers"]
   http_methods = ["POST"]
 
   tags = {

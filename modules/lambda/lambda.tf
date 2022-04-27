@@ -17,8 +17,8 @@ module "lambda" {
   store_on_s3 = true
   s3_bucket   = var.s3_bucket
 
-  vpc_subnet_ids         = [var.VPC_SUBNET_ID]
-  vpc_security_group_ids = [var.VPC_SECURITY_GROUP_ID]
+  vpc_subnet_ids         = [var.vpc_subnet_id]
+  vpc_security_group_ids = [var.vpc_security_group_id]
 
   source_path = [
     {
@@ -34,13 +34,13 @@ module "lambda" {
   ]
 
   environment_variables = {
-    ENV_STAGE = var.SLS_STAGE
+    ENV_STAGE = var.stage
     ENV_REGION = var.aws_region
     EVENT_TABLE_NAME = "events"
     SSM_ARN = local.SSM_ARN
+    log_level = var.log_level
     AWS_LAMBDA_EXEC_WRAPPER = "/opt/otel-instrument"
     OPENTELEMETRY_COLLECTOR_CONFIG_FILE = "/var/task/otel-collector-config.yaml"
-    log_level                           = "debug"
     HONEYCOMB_API_KEY                   = data.aws_ssm_parameter.honeycomb_api_key.value
   }
 

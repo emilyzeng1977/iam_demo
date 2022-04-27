@@ -4,7 +4,10 @@ variable "enable" {
   default     = true
 }
 
-variable "account_id" {}
+variable "account_id" {
+  description = "Account id"
+  type        = string
+}
 
 variable "service" {
   description = "Service name for your Lambda"
@@ -12,8 +15,13 @@ variable "service" {
   default     = ""
 }
 
-variable "SLS_STAGE" {
-  description = "SLS stage for your Lambda"
+variable "stage" {
+  description = "Stage for your Lambda"
+  type        = string
+}
+
+variable "aws_region" {
+  description = "AWS region for your Lambda"
   type        = string
 }
 
@@ -41,17 +49,23 @@ variable "tracing_mode" {
   default     = "PassThrough"
 }
 
+variable "log_level" {
+  type        = string
+  description = "Log level for Lambda"
+  default     = "debug"
+}
+
 variable "s3_bucket" {
   description = "S3 Bucket for storing lambda releases"
   type        = string
 }
 
-variable "VPC_SUBNET_ID" {
+variable "vpc_subnet_id" {
   description = "Subnet id when Lambda Function should run in the VPC. Usually private or intra subnets."
   type        = string
 }
 
-variable "VPC_SECURITY_GROUP_ID" {
+variable "vpc_security_group_id" {
   description = "Security group ids when Lambda Function should run in the VPC"
   type        = string
 }
@@ -84,16 +98,16 @@ variable "tags" {
 }
 
 locals {
-  function_name    = format("%s-%s-%s", var.service, var.SLS_STAGE, var.handler)
+  function_name    = format("%s-%s-%s", var.service, var.stage, var.handler)
   cmd_check        = "make ci-check"
   cmd_build        = "make ci-build"
   cmd_cp_otel      = format("cp otel-collector-config.yaml %s", var.dist_path)
   cmd_cd_dist_path = format("cd %s", var.dist_path)
 
-  SSM_ARN      = format("arn:aws:ssm:%s:%s:parameter/%s/*", var.aws_region, var.account_id, var.SLS_STAGE)
+  SSM_ARN      = format("arn:aws:ssm:%s:%s:parameter/%s/*", var.aws_region, var.account_id, var.stage)
   # IAM
   inline_policy_name = "iam-dev-lambda"
-  lambda_role_name   = var.handler == "create-customer" ? format("%s-%s-%s-lambdaRole", var.service, var.SLS_STAGE, var.aws_region) : format("%s-%s-%s-%s-lambdaRole", var.service, var.SLS_STAGE, var.handler, var.aws_region)
+  lambda_role_name   = var.handler == "create-customer" ? format("%s-%s-%s-lambdaRole", var.service, var.stage, var.aws_region) : format("%s-%s-%s-%s-lambdaRole", var.service, var.stage, var.handler, var.aws_region)
   # Hard code in the original serverless framework
   KMS_KEY = "arn:aws:kms:ap-southeast-2:211817836436:key/834f524e-b2c2-4146-b98d-be77e976483c"
   # Otel

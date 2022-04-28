@@ -47,17 +47,32 @@ resource "aws_api_gateway_integration" "integrations" {
   depends_on = [aws_iam_role.iam_execution_roles]
 }
 
-resource "aws_api_gateway_deployment" "default" {
+resource "aws_api_gateway_deployment" "deployment" {
   rest_api_id       = aws_api_gateway_rest_api.api.id
+
+  triggers = var.auto_deploy ? {
+    # NOTE: The deployment will be triggered when there has any change on resource, method and integration
+    redeployment = sha1(jsonencode([
+      join(",", var.path_parts),
+      join(",", var.http_methods),
+      join(",", var.integration_http_methods),
+      join(",", var.uri_list)
+    ]))
+  } : {}
+
+  lifecycle {
+    create_before_destroy = true
+  }
+
   depends_on = [aws_api_gateway_integration.integrations]
 }
 
-resource "aws_api_gateway_stage" "default" {
+resource "aws_api_gateway_stage" "stages" {
   count = length(var.path_parts) > 0 ? length(var.path_parts) : 0
 
   rest_api_id           = aws_api_gateway_rest_api.api.id
-  deployment_id         = aws_api_gateway_deployment.default.*.id[0]
-  stage_name            = element(var.stage_names, count.index)
+  deployment_id         = aws_api_gateway_deployment.deployment.id
+  stage_name            = var.stage_names[count.index]
   variables             = length(var.stage_variables) > 0 ? element(var.stage_variables, count.index) : {}
 }
 

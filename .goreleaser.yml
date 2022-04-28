@@ -10,13 +10,6 @@ builds:
       - CGO_ENABLED=0
     goarch:
       - amd64
-  - id: seeder
-    main: ./lambda/seeder/seeder.go
-    binary: seeder
-    env:
-      - CGO_ENABLED=0
-    goarch:
-      - amd64
   - id: create-customer
     main: ./workflow/customer-onboarding/create-customer/main.go
     binary: create-customer
@@ -24,3 +17,25 @@ builds:
       - CGO_ENABLED=0
     goarch:
       - amd64
+  - id: customer-projector
+    main: ./lambda/customer-projector/customer-projector.go
+    binary: customer-projector
+    env:
+      - CGO_ENABLED=0
+    goarch:
+      - amd64
+  - id: seeder
+    main: ./lambda/seeder/seeder.go
+    binary: seeder
+    env:
+      - CGO_ENABLED=0
+    goarch:
+      - amd64
+
+  # - id: customerapi
+  #   main: ./lambda/customerapi/customerapi.go
+  #   binary: customerapi
+  #   env:
+  #     - CGO_ENABLED=0
+  #   goarch:
+  #     - amd64

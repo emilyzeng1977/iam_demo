@@ -92,6 +92,12 @@ variable "stage_names" {
   default     = []
 }
 
+variable "auto_deploy" {
+  description = "If deploy to stage automatically when any changes on resources, methods and AWS services"
+  type        = bool
+  default     = true
+}
+
 variable "tags" {
   description = "Tags to apply to the keys"
   type        = map(string)

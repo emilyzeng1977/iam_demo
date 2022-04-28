@@ -1,6 +1,6 @@
 service: iam
 
-frameworkVersion: "3.10"
+frameworkVersion: "3.15.2"
 
 useDotenv: true
 
@@ -24,6 +24,7 @@ provider:
     ENV_REGION: ${self:provider.region}
     EVENT_TABLE_NAME: events
     SSM_ARN: arn:aws:ssm:${aws:region}:${aws:accountId}:parameter/${env:SLS_STAGE}/*
+    KINESIS_ARN: arn:aws:kinesis:${aws:region}:${aws:accountId}:stream/eventstream
       
 package:
   patterns:
@@ -40,10 +41,82 @@ functions:
   #         path: /api/v1
   authorizer:
     timeout: 120
-    handler: dist/authorizer_linux_amd64/lambda
+    handler: dist/authorizer_linux_amd64/authorizer
     iamRoleStatements:
       - Effect: Allow
         Action:
           - "ssm:GetParameters"
         Resource:
           - ${self:provider.environment.SSM_ARN}
+  seeder:
+    timeout: 120
+    handler: dist/seeder_linux_amd64/seeder
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - "ssm:GetParameters"
+        Resource:
+          - ${self:provider.environment.SSM_ARN}
+  create-customer:
+    timeout: 240
+    handler: dist/create-customer_linux_amd64/create-customer
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - "kms:Decrypt"
+        Resource:
+          # Dynamo kms key
+          - arn:aws:kms:ap-southeast-2:211817836436:key/834f524e-b2c2-4146-b98d-be77e976483c
+      - Effect: Allow
+        Action:
+          - "dynamodb:Query"
+          - "dynamodb:PutItem"
+        Resource:
+          - arn:aws:dynamodb:${aws:region}:${aws:accountId}:table/events
+  customer-projector:
+    timeout: 120
+    handler: dist/customer-projector_linux_amd64/customer-projector
+    events:
+      - stream:
+          type: kinesis
+          #arn: ${self:provider.environment.KINESIS_ARN}
+          arn: "arn:aws:kinesis:ap-southeast-2:204532658794:stream/kinesis_demo"
+          batchSize: 100
+          startingPosition: TRIM_HORIZON
+          enabled: true
+          filterPatterns:
+            - data:
+                type:
+                  - "identitii.iam.customer.v1alpha1.Created"
+                  - "identitii.iam.customer.v1alpha1.Updated"
+            
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - "ssm:GetParameters"
+        Resource:
+          - ${self:provider.environment.SSM_ARN}
+      - Effect: Allow
+        Action:
+          - "kms:Decrypt"
+        Resource:
+          # Kinesis kms key
+          - arn:aws:kms:ap-southeast-2:211817836436:key/f82bfa78-ab66-47ef-ab2c-3bc53142f758
+
+              
+
+            
+
+#
+# Customer workflow section
+# TODO: Terraform this. 
+# 
+stepFunctions:
+  stateMachines:
+    NewCustomerProvisioningFlow:
+      role: arn:aws:iam::${aws:accountId}:role/NewCustomerProvisioningFlowRole    
+      events:
+        - http:
+            method: POST
+            path: /v1/customers
+      definition: ${file(workflow/customer-onboarding/definition.yaml)}
